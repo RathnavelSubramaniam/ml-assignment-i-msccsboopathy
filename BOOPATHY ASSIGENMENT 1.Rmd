@@ -1,0 +1,76 @@
+---
+title: "Assignment"
+author: "BOOPATHY"
+date: "2024-07-08"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+library(ISLR)
+```
+
+```{r}
+data(Auto)
+```
+```{r}
+summary(complete.cases(Auto))
+```
+#A)Which of the predictors are quantitative, and which are qualitative?
+```{r}
+sapply(Auto, class)
+```
+```{r}
+summary(Auto)
+```
+```{r}
+head(unique(Auto$name[Auto$origin==1]), 10)
+```
+```{r}
+head(unique(Auto$name[Auto$origin==2]), 10)
+```
+```{r}
+head(unique(Auto$name[Auto$origin==3]), 10)
+```
+```{r}
+Auto$origin <- factor(Auto$origin, levels=1:3, labels=c("U.S.", "Europe", "Japan"))
+Auto$origin
+```
+```{r}
+sapply(Auto, class)
+```
+```{r}
+quant <- sapply(Auto, is.numeric)
+quant
+```
+#B)What is the range of each quantitative predictor? You can answer this using the range() function.
+
+```{r}
+sapply(Auto[, quant], range)
+
+```
+#C)What is the mean and standard deviation of each quantitative predictor? 
+
+```{r}
+sapply(Auto[, quant], function(x) signif(c(mean(x), sd(x)), 2))
+```
+#D)Now remove the 10th through 85th observations. What is the range, mean, and standard deviation of each predictor in the subset of the data that remains? 
+
+```{r}
+output <- sapply(Auto[-10:-85, quant], function(x) round(c(range(x), mean(x), sd(x)), 2))
+rownames(output) <- c("min", "max", "mean", "sd")
+output
+```
+#E)Using the full data set, investigate the predictors graphically, using scatterplots or other tools of your choice. Create some plots highlighting the relationships among the predictors. Comment on your findings.
+
+```{r}
+library(pheatmap)
+pheatmap(t(scale(as.matrix(Auto[, quant]))), 
+         annotation=Auto["origin"],
+         show_colnames=FALSE)
+```
+#F)Suppose that we wish to predict gas mileage (mpg) on the basis of the other variables. Do your plots suggest that any of the other variables might be useful in predicting mpg? Justify your answer
+
+Yes,it would appear that year,acceleration,and origin would be decent predictors of mpg.
